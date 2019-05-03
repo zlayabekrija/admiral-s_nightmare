@@ -20,6 +20,7 @@
 .name,
 .cpu {
     width: 50%;
+    text-align: center;
 }
 
 .btn-outline-primary:hover {
@@ -28,4 +29,21 @@
 
 .btn-outline-primary:not(:disabled):not(.disabled):active {
     background-color: #fff;
+}
+#ships {
+    width: 300px;
+    height: 200px;
+    position: absolute;;
+    top: 50px;
+    left: 500px;
+}
+
+.ships {
+    height: 30px;
+    margin: 5px;
+    border-radius: 5px;
+    background-color: blue;
+}
+.ships > p {
+    margin: 0;
 }
