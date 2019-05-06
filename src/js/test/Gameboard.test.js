@@ -15,12 +15,12 @@ describe('Gameboard', () => {
         expect(game.position('v', ship, 0, 0)).toBe(false);
     })
     test('Should record the miss', () => {
-        expect(game.recieveAttack(0, 7)).toEqual('M');
+        expect(game.recieveAttack(0, 7)).toEqual(false);
     })
     test('Should record the hit', () => {
-        expect(game.recieveAttack(0, 0)).toEqual('X');
+        expect(game.recieveAttack(0, 0)).toEqual(true);
     })
-    test('Should return undefined if coords already checked', () => {
+    test('Should return undefined if coords are already checked', () => {
         expect(game.recieveAttack(0, 0)).toEqual(undefined)
     })
     test('Should report all sunk', () => {

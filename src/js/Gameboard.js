@@ -9,6 +9,7 @@ const Gameboard = (board) => {
     return arr;
   }
   let playBoard = gameboard();
+  //positioning
   const horizontal = (ship, startingX, startingY) => {
     if (startingX + ship.size.length > playBoard.length) {
       return false;
@@ -36,41 +37,6 @@ const Gameboard = (board) => {
   const position = (direction, ship, startingX, startingY) => {
     return direction === 'h' ? horizontal(ship, startingX, startingY) : vertical(ship, startingX, startingY)
   }
-  const recieveAttack = (coorX, coorY) => {
-    if (playBoard[coorX][coorY] === '0') {
-      return playBoard[coorX][coorY] = 'M'
-    } else if (playBoard[coorX][coorY] === 'X') {
-      return undefined;
-    } else {
-      return horizonShips[playBoard[coorX][coorY]] !== undefined ? horAttack(coorX, coorY) : verAttack(coorX, coorY)
-    }
-  }
-  const horAttack = (coorX, coorY) => {
-    let shipHit = horizonShips[playBoard[coorX][coorY]];
-    let pos = calculateShot('h', shipHit, coorX, coorY)
-    shipHit.hit(pos, shipHit.size)
-    if (shipHit.isSunk(shipHit.size)) {
-      console.log('Sank');
-      delete horizonShips[shipHit.name];
-    }
-    return playBoard[coorX][coorY] = 'X'
-  }
-  const verAttack = (coorX, coorY) => {
-    let shipHit = vShips[playBoard[coorX][coorY]];
-    let pos = calculateShot('v', shipHit, coorX, coorY)
-    shipHit.hit(pos, shipHit.size)
-    if (shipHit.isSunk(shipHit.size)) {
-      console.log('Sank');
-      delete vShips[shipHit.name];
-    }
-    return playBoard[coorX][coorY] = 'X'
-  }
-  const calculateShot = (direction, ship, coorX, coorY) => {
-    return direction === 'h' ? calcPlace(ship.size, coorY) : calcPlace(ship.size, coorX);
-  }
-  const calcPlace = (ship, coor) => {
-    return (coor) % ship.length
-  }
   const invalidH = (x, y, arr, compare) => {
     for (let i = 0; i < compare.length; i++) {
       if (arr[y][x + i] !== '0') return true;
@@ -82,6 +48,45 @@ const Gameboard = (board) => {
       if (arr[y + i][x] !== '0') return true;
     }
     return false;
+  }
+  //attacking
+  const recieveAttack = (coorX, coorY) => {
+    if (playBoard[coorX][coorY] === '0') {
+      playBoard[coorX][coorY] = 'M'
+      return false;
+    } else if (playBoard[coorX][coorY] === 'X' || playBoard[coorX][coorY] === 'M') {
+      return undefined;
+    } else {
+      return horizonShips[playBoard[coorX][coorY]] !== undefined ? horAttack(coorX, coorY) : verAttack(coorX, coorY)
+    }
+  }
+  const horAttack = (coorX, coorY) => {
+    let shipHit = horizonShips[playBoard[coorX][coorY]];
+    let pos = calculateShot('h', shipHit, coorX, coorY)
+    shipHit.hit(pos, shipHit.size)
+    if (shipHit.isSunk(shipHit.size)) {
+      alert('Sank');
+      delete horizonShips[shipHit.name];
+    }
+    playBoard[coorX][coorY] = 'X'
+    return true
+  }
+  const verAttack = (coorX, coorY) => {
+    let shipHit = vShips[playBoard[coorX][coorY]];
+    let pos = calculateShot('v', shipHit, coorX, coorY)
+    shipHit.hit(pos, shipHit.size)
+    if (shipHit.isSunk(shipHit.size)) {
+      alert('Sank')
+      delete vShips[shipHit.name];
+    }
+    playBoard[coorX][coorY] = 'X'
+    return true
+  }
+  const calculateShot = (direction, ship, coorX, coorY) => {
+    return direction === 'h' ? calcPlace(ship.size, coorY) : calcPlace(ship.size, coorX);
+  }
+  const calcPlace = (ship, coor) => {
+    return (coor) % ship.length
   }
   const allSunk = (hors, vert) => {
     return Object.keys(hors).length === 0 && Object.keys(vert).length === 0;

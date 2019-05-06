@@ -2,7 +2,9 @@ import './css/style.css';
 import 'bootstrap';
 import {
     renderBoard,
-    renderShips
+    renderShips,
+    clearBoard,
+    legend
 } from '../src/js/render'
 import {
     Gameboard
@@ -10,7 +12,9 @@ import {
 import {
     Ship
 } from '../src/js/Ship';
-
+import {
+    CPU
+} from '../src/js/CPU'
 let ships = {
     regent: {
         name: 'Regent',
@@ -34,37 +38,98 @@ let ships = {
     }
 };
 let player = Gameboard(10);
-    let cpu = Gameboard(10);
+let cpu = Gameboard(10);
 
 window.onload = () => {
-    
+
     let playerShips = intstantiateShips(ships);
     let cpuShips = intstantiateShips(ships);
-    let n = postionShips(player, playerShips)
-    let f = postionShips(cpu, cpuShips);
-    renderBoard(document.getElementById('gameplay'), n);
+    let playerS = postionShips(player, playerShips)
+    let cpuS = postionShips(cpu, cpuShips);
+    renderBoard(document.getElementById('gameplay'), playerS);
     renderShips(ships, document.getElementById('ships'))
-    renderBoard(document.getElementById('cpu'), f)
+    legend(document.getElementById('ships'))
+    renderBoard(document.getElementById('cpu'), cpuS)
+    let start = Gameplay(player, cpu);
+
+    document.addEventListener('click', e => {
+        while (!start.gameOver()) {
+            if (e.target.dataset.x && event.target.dataset.y && e.target.parentElement.id === 'cpu') {
+
+                cpu.recieveAttack(Number(e.target.dataset.x), Number(e.target.dataset.y))
+                clearBoard(document.getElementById('cpu'));
+                renderBoard(document.getElementById('cpu'), cpuS)
+                start.cpuAttack();
+                clearBoard(document.getElementById('gameplay'));
+                renderBoard(document.getElementById('gameplay'), playerS);
+            } else {
+                break;
+            }
+
+        }
+    })
 }
 
-document.addEventListener('click', e => {
-    if (e.target.dataset.x && event.target.dataset.y && e.target.parentElement.id === 'cpu') {
-        e.target.textContent = 'X'; 
-    }
-})
+
 const intstantiateShips = ships => {
-    let allShips = [];
+    let allShips = {};
     for (let ship in ships) {
-        allShips.push(Ship(ships[ship].name, ships[ship].size));
+        allShips[ship] = Ship(ships[ship].name, ships[ship].size);
     }
     return allShips;
 }
+
 const postionShips = (gameboard, ships) => {
-    for (let i = 0; i < ships.length; i++) {
+
+    for (let ship in ships) {
         let randX = Math.floor(Math.random() * 10);
         let randY = Math.floor(Math.random() * 10);
         let pos = Math.floor(Math.random() * 10) % 2 === 0 ? 'h' : 'v';
-        gameboard.position(pos, ships[i], randX, randY)
+        let valid = gameboard.position(pos, ships[ship], randX, randY)
+        while (!valid) {
+            valid = gameboard.position(pos, ships[ship], Math.floor(Math.random() * 10), Math.floor(Math.random() * 10))
+        }
     }
     return gameboard;
 }
+
+const Gameplay = ((player, cpu) => {
+    const cpuPlay = CPU();
+    const gameOver = () => {
+        if(player.allSunk(player.vShips, player.horizonShips) || cpu.allSunk(cpu.vShips, cpu.horizonShips)){
+            alert('Game over');
+            return true;
+        }
+        return false;
+    }
+    const playOn = (attack, x, y) => attack.recieveAttack(x, y)
+    const switchPlayers = (first, second) => {
+        first,
+        second = second,
+        first
+    }
+    const playerAttack = () => {
+        document.addEventListener('click', e => {
+            if (e.target.dataset.x && event.target.dataset.y && e.target.parentElement.id === 'cpu') {
+                cpu.recieveAttack(Number(e.target.dataset.x), Number(e.target.dataset.y))
+                return true
+            }
+        })
+    }
+    const cpuAttack = () => {
+        let a = cpuPlay.play();
+        player.recieveAttack(a[0], a[1]);
+    }
+    document.addEventListener('click',e => {
+        if(e.target.textContent === 'Restart'){
+            document.location.reload();
+        }
+    })
+    return {
+        gameOver,
+        playOn,
+        switchPlayers,
+        playerAttack,
+        cpuAttack
+    }
+})
