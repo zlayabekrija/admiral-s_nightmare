@@ -61,4 +61,4 @@ typings/
 .next
 
 # make it by yourself :) 
-./dist
+/dist
