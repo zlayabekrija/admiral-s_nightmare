@@ -2,7 +2,7 @@
 
 #gameplay,
 #cpu {
-    width: 370px;
+    width: 33%;
 }
 
 .field {
@@ -30,13 +30,7 @@
 .btn-outline-primary:not(:disabled):not(.disabled):active {
     background-color: #fff;
 }
-#ships {
-    width: 300px;
-    height: 200px;
-    position: absolute;;
-    top: 50px;
-    left: 500px;
-}
+
 
 .ships {
     height: 30px;
