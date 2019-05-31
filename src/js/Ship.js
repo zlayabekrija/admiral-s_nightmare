@@ -1,8 +1,8 @@
 const Ship = (name, ship) => {
-  let size = new Array(ship).fill(name);
-  const hit = (position, size) => size[position] = 'X';
-  const isSunk = (size) => size.every(pos);
-  const pos = (pos) => pos === 'X';
+  let size = ship
+  // eslint-disable-next-line no-return-assign
+  const hit = () => --size
+  const isSunk = () => size === 0
   return {
     size,
     hit,

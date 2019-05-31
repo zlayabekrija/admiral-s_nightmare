@@ -1,103 +1,78 @@
 const Gameboard = (board) => {
-  let horizonShips = {};
-  let vShips = {};
+  let ships = {}
   const gameboard = () => {
-    let arr = [];
+    let arr = []
     for (let i = 0; i < board; i++) {
       arr.push(new Array(board).fill('0'))
     }
-    return arr;
+    return arr
   }
-  let playBoard = gameboard();
-  //positioning
+  let playBoard = gameboard()
+  // positioning
   const horizontal = (ship, startingX, startingY) => {
-    if (startingX + ship.size.length > playBoard.length) {
-      return false;
+    if (startingX + ship.size > playBoard.length) {
+      return false
     }
-    if (invalidH(startingX, startingY, playBoard, ship.size)) return false;
-    for (let i = 0; i < ship.size.length; i++) {
-
+    if (invalidH(startingX, startingY, playBoard, ship.size)) return false
+    for (let i = 0; i < ship.size; i++) {
       playBoard[startingY][startingX + i] = ship.name
-
     }
-    horizonShips[ship.name] = ship;
-    return true;
+    ships[ship.name] = ship
+    return true
   }
   const vertical = (ship, startingX, startingY) => {
-    if (startingY + ship.size.length > playBoard.length) {
-      return false;
+    if (startingY + ship.size > playBoard.length) {
+      return false
     }
-    if (invalidV(startingX, startingY, playBoard, ship.size)) return false;
-    for (let i = 0; i < ship.size.length; i++) {
+    if (invalidV(startingX, startingY, playBoard, ship.size)) return false
+    for (let i = 0; i < ship.size; i++) {
       playBoard[startingY + i][startingX] = ship.name
     }
-    vShips[ship.name] = ship;
+    ships[ship.name] = ship
     return true
   }
   const position = (direction, ship, startingX, startingY) => {
     return direction === 'h' ? horizontal(ship, startingX, startingY) : vertical(ship, startingX, startingY)
   }
   const invalidH = (x, y, arr, compare) => {
-    for (let i = 0; i < compare.length; i++) {
-      if (arr[y][x + i] !== '0') return true;
+    for (let i = 0; i < compare; i++) {
+      if (arr[y][x + i] !== '0') return true
     }
-    return false;
+    return false
   }
   const invalidV = (x, y, arr, compare) => {
-    for (let i = 0; i < compare.length; i++) {
-      if (arr[y + i][x] !== '0') return true;
+    for (let i = 0; i < compare; i++) {
+      if (arr[y + i][x] !== '0') return true
     }
-    return false;
+    return false
   }
-  //attacking
+  // attacking
   const recieveAttack = (coorX, coorY) => {
     if (playBoard[coorX][coorY] === '0') {
       playBoard[coorX][coorY] = 'M'
-      return false;
+      return false
     } else if (playBoard[coorX][coorY] === 'X' || playBoard[coorX][coorY] === 'M') {
-      return undefined;
+      return undefined
     } else {
-      return horizonShips[playBoard[coorX][coorY]] !== undefined ? horAttack(coorX, coorY) : verAttack(coorX, coorY)
+      ships[playBoard[coorX][coorY]].hit()
+
+      if (ships[playBoard[coorX][coorY]].isSunk()) {
+        delete ships[playBoard[coorX][coorY]]
+      }
+      playBoard[coorX][coorY] = 'X'
+      return true
     }
   }
-  const horAttack = (coorX, coorY) => {
-    let shipHit = horizonShips[playBoard[coorX][coorY]];
-    let pos = calculateShot('h', shipHit, coorX, coorY)
-    shipHit.hit(pos, shipHit.size)
-    if (shipHit.isSunk(shipHit.size)) {
-      alert('Sank');
-      delete horizonShips[shipHit.name];
-    }
-    playBoard[coorX][coorY] = 'X'
-    return true
-  }
-  const verAttack = (coorX, coorY) => {
-    let shipHit = vShips[playBoard[coorX][coorY]];
-    let pos = calculateShot('v', shipHit, coorX, coorY)
-    shipHit.hit(pos, shipHit.size)
-    if (shipHit.isSunk(shipHit.size)) {
-      alert('Sank')
-      delete vShips[shipHit.name];
-    }
-    playBoard[coorX][coorY] = 'X'
-    return true
-  }
-  const calculateShot = (direction, ship, coorX, coorY) => {
-    return direction === 'h' ? calcPlace(ship.size, coorY) : calcPlace(ship.size, coorX);
-  }
-  const calcPlace = (ship, coor) => {
-    return (coor) % ship.length
-  }
-  const allSunk = (hors, vert) => {
-    return Object.keys(hors).length === 0 && Object.keys(vert).length === 0;
+
+  const allSunk = (ships) => {
+    return Object.keys(ships).length === 0
   }
   return {
     playBoard,
     position,
-    horizonShips,
-    vShips,
     recieveAttack,
-    allSunk
+    allSunk,
+    ships
   }
 }
 

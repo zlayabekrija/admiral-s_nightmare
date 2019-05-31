@@ -1,15 +1,18 @@
-import {Ship} from "../Ship";
+/* eslint-disable no-undef */
+import { Ship } from '../Ship'
 
 describe('Ship', () => {
-  const ship = Ship('edge',4);
-  test('to hit the ship',() => {
-      expect(ship.hit(2,['0','0','0','0'])).toBe('X');
+  const ship = Ship('edge', 4)
+  test('to hit the ship', () => {
+    expect(ship.hit()).toBe(3)
   })
-  test('to sunk the ship',() => {
-    expect(ship.isSunk(['X','X','X','X'])).toBe(true);
+  test('to sunk the ship', () => {
+    expect(ship.isSunk()).toBe(false)
   })
   test('the ship isn\'t sunk', () => {
-    expect(ship.isSunk(['edge','X','X','X'])).toBe(false);
+    ship.hit()
+    ship.hit()
+    ship.hit()
+    expect(ship.isSunk()).toBe(true)
   })
-
-});
+})
