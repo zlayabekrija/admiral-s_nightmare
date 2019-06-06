@@ -1,0 +1,62 @@
+@import "~bootstrap/scss/bootstrap";
+
+#gameplay,
+#cpu {
+    width: 33%;
+}
+
+.field {
+    width: 30px;
+    height: 30px;
+    margin: 2px;
+    float: left;
+    display: flex;
+    align-items: center;
+    font-size: 1em;
+    justify-content: center;
+    font-weight: 900;
+}
+
+.name,
+.cpu {
+    width: 50%;
+    text-align: center;
+}
+
+.btn-outline-primary:hover {
+    background-color: #fff;
+}
+
+.btn-outline-primary:not(:disabled):not(.disabled):active {
+    background-color: #fff;
+}
+
+
+.ships {
+    height: 30px;
+    margin: 5px;
+    border-radius: 5px;
+    background-color: blue;
+}
+.ships > p {
+    margin: 0;
+}
+.red {
+    background-color: red;
+}
+.black {
+    background-color: black;
+}
+.blue {
+    background-color: blue;
+}
+.img-legend {
+    color: white;
+    border-radius: 10px;
+    text-align: center;
+    margin: 5px;
+}
+.legend {
+    font-weight: bold;
+    
+}
