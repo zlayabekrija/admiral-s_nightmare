@@ -62,3 +62,6 @@ typings/
 
 # make it by yourself :) 
 dist/
+
+#
+*lock.json
